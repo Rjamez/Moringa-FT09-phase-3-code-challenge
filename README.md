@@ -28,7 +28,7 @@ run `pytest` to make sure your code is functional before submitting. -->
 
 The folder structure is as follows:
 
-1. On the root folder, we have created the main file and named app.py. make use of it to test your code. You re expected to add more code to test your own implementation.
+1. On the root folder, we have created the main file and named app.py. make use of it to test  your code. You re expected to add more code to test your own implementation.
 
 2. Still on the root path, we have the following folders:
     - database: Here the most important files are the setup.y where you are expected to write your queries to crate the database. in the same folder, there is another file called connection.py where we have proivded the connection string for your database
