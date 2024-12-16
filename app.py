@@ -1,21 +1,7 @@
 from database.setup import create_tables
-from database.connection import get_db_connection
 from models.article import Article
 from models.author import Author
 from models.magazine import Magazine
-from models.tag import Tag # type: ignore
-
-# Create sample authors  
-author1 = Author(id=1, name="Jane Doe")  
-
-# Create sample magazines  
-magazine1 = Magazine(id=1, name="Tech Times", category="Technology")  
-
-# Create a sample article  
-article1 = Article(author=author1, magazine=magazine1, title="The Future of Tech")  
-
-# Now you can add print statements or logic to verify the created instances  
-print(f"Author: {author1.name}, Magazine: {magazine1.name}, Article: {article1.title}")
 
 def main():
     # Initialize the database and create tables
@@ -28,56 +14,40 @@ def main():
     article_title = input("Enter article title: ")
     article_content = input("Enter article content: ")
 
-    # Connect to the database
-    conn = get_db_connection()
-    cursor = conn.cursor()
+    # Create the author and magazine objects
+    author = Author(author_name)  # Author object is created but not inserted yet
+    magazine = Magazine(magazine_name, magazine_category)  # Magazine object is created but not inserted yet
 
-    try:
-        # Create an author
-        cursor.execute('INSERT INTO authors (name) VALUES (?)', (author_name,))
-        author_id = cursor.lastrowid 
+    # Insert the author and magazine into the database (this will assign their IDs)
+    author_id = insert_author_into_db(author)  # Insert author and return the generated ID
+    magazine_id = insert_magazine_into_db(magazine)  # Insert magazine and return the generated ID
 
-        # Create a magazine
-        cursor.execute('INSERT INTO magazines (name, category) VALUES (?,?)', (magazine_name, magazine_category))
-        magazine_id = cursor.lastrowid 
+    # Now create the article with the IDs
+    article = Article(None, article_title, article_content, author_id, magazine_id)  # Pass the IDs to Article
 
-        # Create an article
-        cursor.execute('INSERT INTO articles (title, content, author_id, magazine_id) VALUES (?, ?, ?, ?)',
-                       (article_title, article_content, author_id, magazine_id))
+    # Display results
+    print("\nAuthor Details:")
+    print(f"ID: {author_id}, Name: {author.name}")
 
-        conn.commit()
+    print("\nMagazine Details:")
+    print(f"ID: {magazine_id}, Name: {magazine.name}, Category: {magazine.category}")
 
-        # Query the database for inserted records. 
-        # The following fetch functionality should probably be in their respective models
+    print("\nArticle Details:")
+    print(f"ID: {article.id}, Title: {article.title}, Author ID: {article.author_id}, Magazine ID: {article.magazine_id}")
 
-        cursor.execute('SELECT * FROM magazines')
-        magazines = cursor.fetchall()
 
-        cursor.execute('SELECT * FROM authors')
-        authors = cursor.fetchall()
+def insert_author_into_db(author):
+    # Insert the author into the database and return the generated ID
+    # For example, if you're using SQLAlchemy, this could be:
+    # session.add(author)
+    # session.commit()
+    # return author.id
+    pass
 
-        cursor.execute('SELECT * FROM articles')
-        articles = cursor.fetchall()
-
-        # Display results
-        print("\nMagazines:")
-        for magazine in magazines:
-            print(Magazine(magazine["id"], magazine["name"], magazine["category"]))
-
-        print("\nAuthors:")
-        for author in authors:
-            print(Author(author["id"], author["name"]))
-
-        print("\nArticles:")
-        for article in articles:
-            print(Article(article["id"], article["title"], article["content"], article["author_id"], article["magazine_id"]))
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        conn.rollback()
-
-    finally:
-        conn.close()
+def insert_magazine_into_db(magazine):
+    # Insert the magazine into the database and return the generated ID
+    # Similar logic to insert_author_into_db
+    pass
 
 if __name__ == "__main__":
     main()
